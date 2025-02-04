@@ -9,10 +9,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - TriggerGeometry
   - Water
   - UI
-  - 
+  - Player
   - 
   - PostProcessing
   - 
