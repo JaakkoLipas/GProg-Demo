@@ -31,7 +31,7 @@ namespace AG3958
         private Vector3 spawnTarget;
 
         // Origin vector for spawning
-        private Vector3 spawnOrigin;
+        internal Vector3 spawnOrigin { get; private set; }
 
         // List of objects spawned by this script
         public List<GameObject> spawnedItems;
@@ -60,7 +60,7 @@ namespace AG3958
                 spawnTarget = SetSpawnPosition(i);
             }
 
-            Debug.Log(spawnedItems.ToString());
+            Debug.Log(spawnedItems);
             // If the spawner is set to extend further instead of continuing to spawn, set the spawner's position to where the final block was spawned
             if (isExtending) spawnOrigin = spawnTarget;
             else spawnTarget = SetSpawnPosition(0); // Reset to the initial spawn point

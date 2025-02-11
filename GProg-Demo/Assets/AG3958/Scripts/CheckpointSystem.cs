@@ -1,38 +1,54 @@
+using System;
 using UnityEngine;
 
-public class CheckpointSystem : MonoBehaviour
+namespace AG3958
 {
-    // Current region index
-    private int region;
-
-    // Is the current lap valid? A lap is not counted if this is set to false!
-    private bool isLapValid;
-
-    [Tooltip("Every track checkpoint in order.")]
-    [SerializeField] private GameObject[] checkpointRegions;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    public class CheckpointSystem : MonoBehaviour
     {
-        region = checkpointRegions.Length;
-        isLapValid = false;
-    }
+        // Current region index
+        private int region;
 
-    // Call from the checkpoint trigger script
-    public void CheckpointTrigger(int regionIndex)
-    {
-        if (region - regionIndex == -1) // If this is true, the checkpoints are being progressed in order
+        // Is the current lap valid? A lap is not counted if this is set to false!
+        private bool isLapValid;
+
+        [Tooltip("Every track checkpoint in order.")]
+        [SerializeField] private GameObject[] checkpointRegions;
+
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        private void Start()
         {
-            isLapValid = true;
+            // This is decremented by 1 to make Length and IndexOf the same at the final element
+            region = checkpointRegions.Length - 1;
+            isLapValid = false;
         }
-        else if (region - regionIndex == checkpointRegions.Length) // If this is true, a lap is completed
+
+        /// <summary>
+        /// Proceeds the checkpoint system logic based on the GameObject triggering this method.
+        /// If the GameObject is not found in the checkpoint system's assigned checkpoint array, return and consider the lap invalid.
+        /// </summary>
+        /// <param name="triggerRegion">Reference to the GameObject that triggers this method</param>
+        public void CheckpointTrigger(ref GameObject triggerRegion)
         {
-            if (isLapValid)
+            int regionIndex = Array.IndexOf(checkpointRegions, triggerRegion);
+            if (regionIndex == -1) // Error handler conditional logic: Array.IndexOf returns -1 if the element is not found
             {
-                Debug.Log("+1 lap");
+                isLapValid = false;
+                return;
             }
+            if (region - regionIndex == checkpointRegions.Length - 1) // If this is true, a lap is completed
+            {
+                if (isLapValid) // Only log a completed lap if the lap has never been invalidated prior to crossing the finish line
+                {
+                    Debug.Log("+1 lap");
+                }
+                isLapValid = true; // Reset the lap to be valid when the finish line is crossed
+            }
+            else if (region - regionIndex != -1) // If this is true, the checkpoints were not progressed in order and the lap is invalidated
+            {
+                isLapValid = false;
+            } 
+            region = regionIndex;
         }
-        else isLapValid = false;
-        region = regionIndex;
     }
+
 }

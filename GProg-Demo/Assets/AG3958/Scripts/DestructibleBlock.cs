@@ -24,6 +24,7 @@ namespace AG3958
         {
             if (Time.time - timeOnInstantiate >= lifeTime)
             {
+                this.gameObject.GetComponentInParent<BlockSpawner>().spawnedItems.Remove(this.gameObject);
                 Destroy(this.gameObject);
             }
         }

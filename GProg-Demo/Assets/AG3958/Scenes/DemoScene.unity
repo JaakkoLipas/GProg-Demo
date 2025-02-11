@@ -388,7 +388,7 @@ MonoBehaviour:
   direction: 0
   blockShape: 3
   spawnCount: 3
-  isExtending: 0
+  isExtending: 1
   spawnedItems: []
 --- !u!1 &666935222
 GameObject:
