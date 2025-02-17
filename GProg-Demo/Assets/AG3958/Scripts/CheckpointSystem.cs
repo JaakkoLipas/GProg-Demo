@@ -49,6 +49,22 @@ namespace AG3958
             } 
             region = regionIndex;
         }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.cyan;
+            for (int i = 0; i < checkpointRegions.Length; i++)
+            {
+                int nextIndex = i + 1;
+                if (nextIndex >= checkpointRegions.Length)
+                {
+                    nextIndex -= checkpointRegions.Length;
+                }
+
+                Gizmos.DrawLine(checkpointRegions[i].transform.position, checkpointRegions[nextIndex].transform.position);
+                Gizmos.DrawSphere(checkpointRegions[i].transform.position, 0.1f);
+            }
+        }
     }
 
 }
