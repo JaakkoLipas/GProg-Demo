@@ -31,7 +31,7 @@ namespace AG3958
         private Vector3 spawnTarget;
 
         // Origin vector for spawning
-        internal Vector3 spawnOrigin { get; private set; }
+        [HideInInspector] public Vector3 spawnOrigin { get; private set; }
 
         // List of objects spawned by this script
         public List<GameObject> spawnedItems;

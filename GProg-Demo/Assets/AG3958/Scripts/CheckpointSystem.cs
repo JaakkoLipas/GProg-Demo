@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using AG3958;
 
 namespace AG3958
 {
@@ -11,6 +12,12 @@ namespace AG3958
         // Is the current lap valid? A lap is not counted if this is set to false!
         private bool isLapValid;
 
+        // Time value when checkpoint system is initialized, to be set again when the finish line is crossed on a valid lap
+        [HideInInspector] public float TimeOnStart { get; private set; }
+
+        // Time value when a lap is completed. Reset at every lap completion; use the public getter to set database lap times
+        [HideInInspector] public float LapTime { get; private set; }
+
         [Tooltip("Every track checkpoint in order.")]
         [SerializeField] private GameObject[] checkpointRegions;
 
@@ -20,6 +27,7 @@ namespace AG3958
             // This is decremented by 1 to make Length and IndexOf the same at the final element
             region = checkpointRegions.Length - 1;
             isLapValid = false;
+            TimeOnStart = Time.time;
         }
 
         /// <summary>
@@ -39,30 +47,39 @@ namespace AG3958
             {
                 if (isLapValid) // Only log a completed lap if the lap has never been invalidated prior to crossing the finish line
                 {
-                    Debug.Log("+1 lap");
+                    LapTime = Time.time - TimeOnStart;
+                    Debug.Log("+1 lap: " + TimeSpan.FromSeconds(LapTime).ToString("mm':'ss'.'fff"));
+                    TimeOnStart = Time.time;
                 }
                 isLapValid = true; // Reset the lap to be valid when the finish line is crossed
             }
-            else if (region - regionIndex != -1) // If this is true, the checkpoints were not progressed in order and the lap is invalidated
+            else if (region - regionIndex != -1) // If this is true, the checkpoints were not progressed in order
             {
-                isLapValid = false;
+                if (region - regionIndex == 1) // If this is true, checkpoints are being progressed in reverse
+                {
+                    Debug.Log("Wrong Way!");
+                }
+                else isLapValid = false; // Invalidate the lap if checkpoints are outright being skipped
             } 
             region = regionIndex;
+            Debug.Log(region + " + " + isLapValid);
         }
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.cyan;
+            Gizmos.color = Color.green;
             for (int i = 0; i < checkpointRegions.Length; i++)
             {
                 int nextIndex = i + 1;
                 if (nextIndex >= checkpointRegions.Length)
                 {
                     nextIndex -= checkpointRegions.Length;
+                    Gizmos.color = Color.red;
                 }
 
                 Gizmos.DrawLine(checkpointRegions[i].transform.position, checkpointRegions[nextIndex].transform.position);
-                Gizmos.DrawSphere(checkpointRegions[i].transform.position, 0.1f);
+                if (nextIndex != 0) Gizmos.DrawSphere(checkpointRegions[nextIndex].transform.position, 0.1f);
+                else Gizmos.DrawCube(checkpointRegions[nextIndex].transform.position, new Vector3(0.2f, 0.2f, 0.2f));
             }
         }
     }
