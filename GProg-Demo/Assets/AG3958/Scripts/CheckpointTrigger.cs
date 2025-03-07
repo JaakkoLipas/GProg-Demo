@@ -29,7 +29,7 @@ namespace AG3958
         private void OnVehicleEnter()
         {
             GameObject thisObject = this.gameObject;
-            FindFirstObjectByType<CheckpointSystem>().CheckpointTrigger(ref thisObject);
+            FindFirstObjectByType<CheckpointSystem>().TriggerCheckpoint(ref thisObject);
         }
     }
 
