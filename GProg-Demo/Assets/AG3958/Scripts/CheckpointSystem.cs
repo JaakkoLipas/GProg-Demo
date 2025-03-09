@@ -44,7 +44,7 @@ namespace AG3958
             region = checkpointRegions.Length - 1;
             isLapValid = false;
             lapCounter = 1;
-            currentTimeData.Initialize(trackID);
+            currentTimeData = new TimeData(trackID);
             TimeOnStart = Time.time;
         }
 
@@ -71,8 +71,9 @@ namespace AG3958
                     currentTimeData.PushLapTime(LapTime);
                     Debug.Log("+1 lap: " + TimeData.TimeToString(LapTime));
                     lapCounter++;
-                    if (lapCounter >= maximumLaps)
+                    if (lapCounter > maximumLaps)
                     {
+                        currentTimeData.CalculateRaceTime();
                         TimeDB.SaveSingleToDB(currentTimeData);
                         TimeDB.SaveDatabaseToFile(trackID);
                         Debug.Log("Race complete");
@@ -92,7 +93,7 @@ namespace AG3958
                 else isLapValid = false; // Invalidate the lap if checkpoints are outright being skipped
             } 
             region = regionIndex;
-            Debug.Log(region + " + " + isLapValid);
+            // Debug.Log(region + " + " + isLapValid);
         }
 
         private void OnDrawGizmosSelected()

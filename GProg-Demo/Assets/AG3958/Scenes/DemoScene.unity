@@ -283,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb2b0e19cec81b4d8b4e73b6ac45cf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maximumLaps: 3
   checkpointRegions:
   - {fileID: 1183293620}
   - {fileID: 239262739}
