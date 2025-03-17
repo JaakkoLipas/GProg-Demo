@@ -283,7 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb2b0e19cec81b4d8b4e73b6ac45cf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maximumLaps: 3
+  maximumLaps: 10
   checkpointRegions:
   - {fileID: 1183293620}
   - {fileID: 239262739}
@@ -1622,7 +1622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8df7eea6d5b8a3649a5efa886ae5b279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostMagnitude: 1.5
+  boostMagnitude: 3
   boostTime: 2
 --- !u!65 &1540524463
 BoxCollider:
@@ -1984,7 +1984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18ec83d13fac544cbbe2848e4dc379f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 5
   pathingPoints:
   - {fileID: 172210257}
   - {fileID: 720245730}
