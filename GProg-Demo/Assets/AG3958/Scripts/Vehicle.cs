@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using AG3958;
 using System.Collections;
@@ -7,40 +8,39 @@ namespace AG3958
     [RequireComponent(typeof(Rigidbody))]
     public class Vehicle : MonoBehaviour, IRacingVehicle, IBoostable
     {
-        public float EnginePower { get; set; }
-        public float Weight { get; set; }
-        public float BrakingForce { get; set; }
-        [HideInInspector] public float CurrentSpeed { get; set; }
-        public float MaxSpeed { get; set; }
-        public float MaxSteeringAngle { get; set; }
-        [HideInInspector] public bool InReverse { get; set; }
-        public bool AIControlled { get; set; } = false;
-        public float BoostSpeed { get; set; }
-        public float BoostTime { get; set; }
-        public float BoostGaugeMax { get; set; }
-        public float BoostGaugeUse { get; set; }
-        public float BoostGaugeLevel { get; set; }
-        [HideInInspector] public bool BoostActive { get; set; } = false;
+        [field: SerializeField] public float EnginePower { get; set; }
+        [field: SerializeField] public float Weight { get; set; }
+        [field: SerializeField] public float BrakingForce { get; set; }
+        public float CurrentSpeed { get; set; }
+        [field: SerializeField] public float MaxSpeed { get; set; }
+        [field: SerializeField] public float MaxSteeringAngle { get; set; }
+        public bool InReverse { get; set; }
+        [field: SerializeField] public bool AIControlled { get; set; } = false;
+        [field: SerializeField] public float BoostSpeed { get; set; }
+        public float OriginalMaxSpeed { get; set; }
+        [field: SerializeField] public float BoostTime { get; set; }
+        [field: SerializeField] public float BoostGaugeMax { get; set; }
+        [field: SerializeField] public float BoostGaugeUse { get; set; }
+        [field: SerializeField] public float BoostGaugeLevel { get; set; }
+        public bool BoostActive { get; set; } = false;
 
         private Rigidbody rb;
-        private Vector3 velocity;
-        private Quaternion maxRotationLeft;
-        private Quaternion maxRotationRight;
+        private Vector3 directionVector;
 
-        void Start()
+        private void Start()
         {
+            OriginalMaxSpeed = MaxSpeed;
             rb = GetComponent<Rigidbody>();
-            velocity = Vector3.zero;
-            maxRotationLeft = new Quaternion(-MaxSteeringAngle, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
-            maxRotationRight = new Quaternion(MaxSteeringAngle, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
+            directionVector = rb.transform.forward;
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             CurrentSpeed = rb.linearVelocity.magnitude;
+            directionVector = rb.transform.forward;
         }
 
-        void Update()
+        private void Update()
         {
             if (!AIControlled)
             {
@@ -53,6 +53,7 @@ namespace AG3958
                 }
                 if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(ApplyRotationLeft());
                 if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(ApplyRotationRight());
+                if (Input.GetKeyDown(KeyCode.R)) InReverse = !InReverse;
             }
         }
 
@@ -60,7 +61,11 @@ namespace AG3958
         {
             while (Input.GetKey(KeyCode.W))
             {
-                rb.linearVelocity = Mathf.Lerp(CurrentSpeed, MaxSpeed, (EnginePower / Weight)) * Vector3.forward;
+                if (CurrentSpeed < MaxSpeed)
+                {
+                    if (InReverse) rb.AddForce(-(EnginePower / Weight) * directionVector, ForceMode.VelocityChange);
+                    else rb.AddForce((EnginePower / Weight) * directionVector, ForceMode.VelocityChange);
+                }
                 yield return new WaitForFixedUpdate();
             }
         }
@@ -69,7 +74,10 @@ namespace AG3958
         {
             while (Input.GetKey(KeyCode.S))
             {
-                rb.linearVelocity = Mathf.Lerp(CurrentSpeed, 0, BrakingForce) * Vector3.forward;
+                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.0f))
+                {
+                    rb.linearVelocity *= Math.Min((Weight / BrakingForce), 0.999f);
+                }
                 yield return new WaitForFixedUpdate();
             }
         }
@@ -78,7 +86,7 @@ namespace AG3958
         {
             while (Input.GetKey(KeyCode.A))
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, maxRotationLeft, 0.5f);
+                transform.Rotate(0, -MaxSteeringAngle, 0);
                 yield return new WaitForFixedUpdate();
             }
         }
@@ -87,7 +95,7 @@ namespace AG3958
         {
             while (Input.GetKey(KeyCode.D))
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, maxRotationRight, 0.5f);
+                transform.Rotate(0, MaxSteeringAngle, 0);
                 yield return new WaitForFixedUpdate();
             }
         }
@@ -95,6 +103,8 @@ namespace AG3958
         public IEnumerator ApplyBoost()
         {
             BoostActive = true;
+            MaxSpeed += BoostSpeed;
+            rb.AddForce((CurrentSpeed + BoostSpeed) * directionVector, ForceMode.VelocityChange);
             yield return new WaitForSeconds(BoostTime);
             StartCoroutine(DecelBoost());
         }
@@ -102,10 +112,11 @@ namespace AG3958
         public IEnumerator DecelBoost()
         {
             BoostActive = false;
+            MaxSpeed = OriginalMaxSpeed;
             while (CurrentSpeed > MaxSpeed * 1.01f)
             {
                 if (BoostActive) break;
-                CurrentSpeed = Mathf.Lerp(CurrentSpeed, MaxSpeed, 0.02f);
+                rb.AddForce(-0.2f * directionVector, ForceMode.VelocityChange);
                 yield return new WaitForFixedUpdate();
             }
         }

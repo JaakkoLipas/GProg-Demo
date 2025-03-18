@@ -7,6 +7,7 @@ namespace AG3958
 	internal interface IBoostable
 	{
 		float BoostSpeed { get; set; }
+		float OriginalMaxSpeed { get; set; }
 		float BoostTime { get; set; }
 		float BoostGaugeMax { get; set; }
 		float BoostGaugeUse { get; set; }
