@@ -14,7 +14,7 @@ namespace AG3958
 		float BoostGaugeLevel { get; set; }
 		bool BoostActive { get; set; }
 		
-		IEnumerator ApplyBoost(float boostPower);
+		IEnumerator ApplyBoost(float boostPower, float boostTime);
 		IEnumerator DecelBoost();
 	}
 }

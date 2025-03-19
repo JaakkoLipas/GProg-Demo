@@ -49,7 +49,7 @@ namespace AG3958
                 if (Input.GetKeyDown(KeyCode.Space) && BoostGaugeLevel >= BoostGaugeUse)
                 {
                     BoostGaugeLevel -= BoostGaugeUse;
-                    StartCoroutine(ApplyBoost(BoostSpeed));
+                    StartCoroutine(ApplyBoost(BoostSpeed, BoostTime));
                 }
                 if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(ApplyRotationLeft());
                 if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(ApplyRotationRight());
@@ -100,12 +100,12 @@ namespace AG3958
             }
         }
 
-        public IEnumerator ApplyBoost(float boostPower)
+        public IEnumerator ApplyBoost(float boostPower, float boostTime)
         {
             BoostActive = true;
             MaxSpeed += boostPower;
             rb.AddForce((CurrentSpeed + boostPower) * directionVector, ForceMode.VelocityChange);
-            yield return new WaitForSeconds(BoostTime);
+            yield return new WaitForSeconds(boostTime);
             StartCoroutine(DecelBoost());
         }
 
