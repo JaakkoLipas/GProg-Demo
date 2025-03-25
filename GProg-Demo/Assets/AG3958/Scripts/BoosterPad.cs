@@ -22,7 +22,8 @@ namespace AG3958
             {
                 if (other.gameObject.CompareTag(tag))
                 {
-                    if (other.TryGetComponent<Vehicle>(out Vehicle v))
+                    var v = other.gameObject.GetComponent<IBoostable>();
+                    if (v != null)
                     {
                         StartCoroutine(v.ApplyBoost(boostPower, boostTime));
                     }

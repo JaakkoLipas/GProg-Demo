@@ -14,6 +14,7 @@ namespace AG3958
 		bool InReverse { get; set; }
 		bool AIControlled { get; set; }
 
+		float CalculatePower();
 		IEnumerator ApplyPower();
 		IEnumerator ApplyBrakes();
 		IEnumerator ApplyRotationLeft();

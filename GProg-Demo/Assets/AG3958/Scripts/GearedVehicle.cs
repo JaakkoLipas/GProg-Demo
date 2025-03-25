@@ -6,7 +6,7 @@ using System.Collections;
 namespace AG3958
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Vehicle : MonoBehaviour, IRacingVehicle, IBoostable
+    public class GearedVehicle : MonoBehaviour, IRacingVehicle, IBoostable
     {
         [field: SerializeField] public float EnginePower { get; set; }
         [field: SerializeField] public float Weight { get; set; }
@@ -24,6 +24,10 @@ namespace AG3958
         [field: SerializeField] public float BoostGaugeLevel { get; set; }
         public bool BoostActive { get; set; } = false;
 
+        [SerializeField, Range(1,9)] private int gearCount = 1;
+        public int CurrentGear { get; private set; }
+        private float gearRatio;
+        private (float speedLowerBound, float speedUpperBound) speedEnvelope; 
         private Rigidbody rb;
         private Vector3 directionVector;
 
@@ -32,6 +36,9 @@ namespace AG3958
             OriginalMaxSpeed = MaxSpeed;
             rb = GetComponent<Rigidbody>();
             directionVector = rb.transform.forward;
+            CurrentGear = 1;
+            gearRatio = OriginalMaxSpeed / gearCount;
+            SetSpeedEnvelope();
         }
 
         private void FixedUpdate()
@@ -53,15 +60,35 @@ namespace AG3958
                 }
                 if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(ApplyRotationLeft());
                 if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(ApplyRotationRight());
-                if (Input.GetKeyDown(KeyCode.R)) InReverse = !InReverse;
+                if (Input.GetKeyDown(KeyCode.R)) { InReverse = !InReverse; CurrentGear = 1; }
+                if (Input.GetKeyDown(KeyCode.Q) && CurrentGear < gearCount)
+                {
+                    CurrentGear++;
+                    SetSpeedEnvelope();
+                }
+                if (Input.GetKeyDown(KeyCode.E) && CurrentGear > 1)
+                {
+                    CurrentGear--;
+                    SetSpeedEnvelope();
+                }
             }
+        }
+
+        private void SetSpeedEnvelope()
+        {
+            speedEnvelope.speedLowerBound = gearRatio * (CurrentGear - 1);
+            speedEnvelope.speedUpperBound = gearRatio * CurrentGear;
         }
 
         public float CalculatePower()
         {
             float powerToWeightRatio = EnginePower / Weight;
             if (InReverse) powerToWeightRatio *= -1;
-            return powerToWeightRatio;
+            
+            float finalPower = powerToWeightRatio;
+            if (CurrentSpeed < speedEnvelope.speedLowerBound) finalPower = powerToWeightRatio - Math.Max((speedEnvelope.speedLowerBound - CurrentSpeed), 0f);
+            else if (CurrentSpeed > speedEnvelope.speedUpperBound) finalPower = powerToWeightRatio - Math.Max((CurrentSpeed - speedEnvelope.speedUpperBound), 0f);
+            return Math.Max(finalPower, 0.05f);
         }
 
         public IEnumerator ApplyPower()
@@ -70,7 +97,7 @@ namespace AG3958
             {
                 if (CurrentSpeed < MaxSpeed)
                 {
-                    rb.AddForce(CalculatePower() * directionVector, ForceMode.VelocityChange);
+                    rb.AddForce((CalculatePower()) * directionVector, ForceMode.VelocityChange);
                 }
                 yield return new WaitForFixedUpdate();
             }
