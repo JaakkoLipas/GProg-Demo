@@ -94,10 +94,10 @@ MonoBehaviour:
   <EnginePower>k__BackingField: 600
   <Weight>k__BackingField: 1000
   <BrakingForce>k__BackingField: 1050
-  <MaxSpeed>k__BackingField: 20
+  <MaxSpeed>k__BackingField: 18
   <MaxSteeringAngle>k__BackingField: 3
   <AIControlled>k__BackingField: 0
-  <BoostSpeed>k__BackingField: 30
+  <BoostSpeed>k__BackingField: 5
   <BoostTime>k__BackingField: 3
   <BoostGaugeMax>k__BackingField: 100
   <BoostGaugeUse>k__BackingField: 25

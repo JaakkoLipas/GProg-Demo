@@ -11,9 +11,8 @@ namespace AG3958
 
         private void Start()
         {
-            this.TypeOfObject = "Booster";
-            this.CollisionTagList = new List<string>();
-            this.CollisionTagList.Add("Vehicle");
+            this.TypeOfObject = "Boost Pad";
+            this.CollisionTagList = new List<string>() { "Vehicle", "Player" };
         }
 
         public override void OnTriggerEnter(Collider other)

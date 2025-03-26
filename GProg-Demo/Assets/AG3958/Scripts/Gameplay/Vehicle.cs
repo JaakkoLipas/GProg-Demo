@@ -24,23 +24,23 @@ namespace AG3958
         [field: SerializeField] public float BoostGaugeLevel { get; set; }
         public bool BoostActive { get; set; } = false;
 
-        private Rigidbody rb;
-        private Vector3 directionVector;
+        protected Rigidbody rb;
+        protected Vector3 directionVector;
 
-        private void Start()
+        protected virtual void Start()
         {
             OriginalMaxSpeed = MaxSpeed;
-            rb = GetComponent<Rigidbody>();
+            rb = this.gameObject.GetComponent<Rigidbody>();
             directionVector = rb.transform.forward;
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             CurrentSpeed = rb.linearVelocity.magnitude;
             directionVector = rb.transform.forward;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (!AIControlled)
             {
@@ -57,7 +57,7 @@ namespace AG3958
             }
         }
 
-        public float CalculatePower()
+        public virtual float CalculatePower()
         {
             float powerToWeightRatio = EnginePower / Weight;
             if (InReverse) powerToWeightRatio *= -1;
