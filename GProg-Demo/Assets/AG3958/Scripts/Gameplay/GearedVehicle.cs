@@ -33,25 +33,32 @@ namespace AG3958
         {
             if (!AIControlled)
             {
-                if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(base.ApplyPower());
-                if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(base.ApplyBrakes());
-                if (Input.GetKeyDown(KeyCode.Space) && BoostGaugeLevel >= BoostGaugeUse)
+                if (Controls == IRacingVehicle.ControlMethod.Keyboard)
                 {
-                    BoostGaugeLevel -= BoostGaugeUse;
-                    StartCoroutine(base.ApplyBoost(BoostSpeed, BoostTime));
+                    if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(base.ApplyPower());
+                    if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(base.ApplyBrakes());
+                    if (Input.GetKeyDown(KeyCode.Space) && BoostGaugeLevel >= BoostGaugeUse)
+                    {
+                        BoostGaugeLevel -= BoostGaugeUse;
+                        StartCoroutine(base.ApplyBoost(BoostSpeed, BoostTime));
+                    }
+                    if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(base.ApplyRotationLeft());
+                    if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(base.ApplyRotationRight());
+                    if (Input.GetKeyDown(KeyCode.R)) { InReverse = !InReverse; CurrentGear = 1; }
+                    if (Input.GetKeyDown(KeyCode.Q) && CurrentGear < gearCount)
+                    {
+                        CurrentGear++;
+                        SetSpeedEnvelope();
+                    }
+                    if (Input.GetKeyDown(KeyCode.E) && CurrentGear > 1)
+                    {
+                        CurrentGear--;
+                        SetSpeedEnvelope();
+                    }
                 }
-                if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(base.ApplyRotationLeft());
-                if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(base.ApplyRotationRight());
-                if (Input.GetKeyDown(KeyCode.R)) { InReverse = !InReverse; CurrentGear = 1; }
-                if (Input.GetKeyDown(KeyCode.Q) && CurrentGear < gearCount)
+                else if (Controls == IRacingVehicle.ControlMethod.Controller)
                 {
-                    CurrentGear++;
-                    SetSpeedEnvelope();
-                }
-                if (Input.GetKeyDown(KeyCode.E) && CurrentGear > 1)
-                {
-                    CurrentGear--;
-                    SetSpeedEnvelope();
+
                 }
             }
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AG3958
 {
-	internal interface IRacingVehicle
+	public interface IRacingVehicle
 	{
 		float EnginePower { get; set; }
         float Weight { get; set; }
@@ -13,6 +13,12 @@ namespace AG3958
 		float MaxSteeringAngle { get; set; }
 		bool InReverse { get; set; }
 		bool AIControlled { get; set; }
+		public enum ControlMethod
+		{
+			Keyboard,
+			Controller
+		}
+		ControlMethod Controls { get; set; }
 
 		float CalculatePower();
 		IEnumerator ApplyPower();
