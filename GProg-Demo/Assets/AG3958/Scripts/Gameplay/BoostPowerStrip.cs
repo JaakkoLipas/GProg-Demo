@@ -1,10 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace AG3958
 {
-    public class BoostPowerStrip : TrackObject
+    public sealed class BoostPowerStrip : TrackObject
     {
         [Tooltip("How much should be added to the boost gauge per FixedUpdate tick. Set negative to turn into a hazard!")]
         [SerializeField] private float boostGaugePerTick;

@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using AG3958;
-using System.Collections;
 
 namespace AG3958
 {
@@ -21,12 +19,6 @@ namespace AG3958
             directionVector = rb.transform.forward;
             gearRatio = OriginalMaxSpeed / gearCount;
             SetSpeedEnvelope();
-        }
-
-        protected override void FixedUpdate()
-        {
-            CurrentSpeed = rb.linearVelocity.magnitude;
-            directionVector = rb.transform.forward;
         }
 
         protected override void Update()

@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using AG3958;
 using System.Collections;
 
 namespace AG3958

@@ -22,11 +22,6 @@ namespace AG3958
             directionVector = attachedCamera.transform.forward;
         }
 
-        protected override void Update()
-        {
-            base.Update();
-        }
-
         public override IEnumerator ApplyPower()
         {
             while (Input.GetKey(KeyCode.W) || Input.GetAxis("Vertical") > 0.1f)

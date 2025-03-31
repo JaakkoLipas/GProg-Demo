@@ -1,10 +1,8 @@
 using System.Collections;
-using UnityEngine;
-using AG3958;
 
 namespace AG3958
 {
-	internal interface IBoostable
+	public interface IBoostable
 	{
 		float BoostSpeed { get; set; }
 		float OriginalMaxSpeed { get; set; }
