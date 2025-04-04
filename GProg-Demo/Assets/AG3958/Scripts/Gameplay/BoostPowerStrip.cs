@@ -20,7 +20,8 @@ namespace AG3958
         {
             foreach (IBoostable vehicle in boostablesOnStrip)
             {
-                if (vehicle.BoostGaugeLevel < vehicle.BoostGaugeMax) vehicle.BoostGaugeLevel += boostGaugePerTick;
+                if (vehicle.BoostGaugeLevel < vehicle.BoostGaugeMax && vehicle.BoostGaugeLevel > 0) vehicle.BoostGaugeLevel += boostGaugePerTick;
+                else if (vehicle.BoostGaugeLevel < 0) vehicle.BoostGaugeLevel = 0;
                 else vehicle.BoostGaugeLevel = vehicle.BoostGaugeMax;
             }
         }

@@ -29,7 +29,8 @@ namespace AG3958
                     var v = other.gameObject.GetComponent<IBoostable>();
                     if (v != null)
                     {
-                        if ((v.BoostGaugeLevel + boostGaugeValue) < v.BoostGaugeMax) v.BoostGaugeLevel += boostGaugeValue;
+                        if ((v.BoostGaugeLevel + boostGaugeValue) < v.BoostGaugeMax && (v.BoostGaugeLevel + boostGaugeValue) > 0) v.BoostGaugeLevel += boostGaugeValue;
+                        else if ((v.BoostGaugeLevel + boostGaugeValue) < 0) v.BoostGaugeLevel = 0;
                         else v.BoostGaugeLevel = v.BoostGaugeMax;
                         StartCoroutine(CycleRespawn());
                     }

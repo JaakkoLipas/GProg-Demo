@@ -1,17 +1,20 @@
 using UnityEngine;
 
-public class CameraScript : MonoBehaviour
+namespace AG3958
 {
-    private Vector3 offset;
-
-    private void Start()
+    public class CameraScript : MonoBehaviour
     {
-        offset = transform.position - this.transform.parent.position;
-    }
+        private Vector3 offset;
 
-    private void LateUpdate()
-    {
-        transform.position = this.transform.parent.position + offset;
-        transform.rotation = Quaternion.Euler(0f, this.transform.parent.rotation.eulerAngles.y, 0f);
-    }
+        private void Start()
+        {
+            offset = transform.position - this.transform.parent.position;
+        }
+
+        private void LateUpdate()
+        {
+            transform.position = this.transform.parent.position + offset;
+            transform.rotation = Quaternion.Euler(30f, 0f, 0f);
+        }
+    } 
 }
